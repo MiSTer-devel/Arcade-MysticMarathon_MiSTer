@@ -1,6 +1,6 @@
 # [Arcade: Mystic Marathon](https://en.wikipedia.org/wiki/Mystic_Marathon) for [MiSTer](https://mister-devel.github.io/MkDocs_MiSTer/)
 
-![Mystic Marathon Logo](banner.png)
+![Mystic Marathon Logo](doc/banner.png)
 
 Original core developed by [darfpga](https://github.com/darfpga)
 
@@ -14,7 +14,7 @@ Original source is located in `doc/`
 
 ## Controls
 
-![Mystic Marathon Controls](controlpanel.jpg)
+![Mystic Marathon Controls](doc/controlpanel.jpg)
 
 There is only 1 player allowed to play at a time. If you play in 2 player mode, each player takes turns.
 
