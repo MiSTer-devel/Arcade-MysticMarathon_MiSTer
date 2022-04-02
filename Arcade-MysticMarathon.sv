@@ -290,19 +290,44 @@ wire m_start2  = joy[6];
 wire m_coin    = joy[7];
 wire m_pause   = joy[8];
 
+// DISPLAY
+
 wire hblank, vblank;
 wire hs, vs;
-wire [3:0] r,g,b,intensity;
-wire [3:0] red,green,blue;
-wire [7:0] ri,gi,bi;
 
-assign ri = r*intensity;
-assign gi = g*intensity;
-assign bi = b*intensity;
+wire [ 3:0] r,g,b,intensity;
+wire [ 7:0] ri,gi,bi;
+wire [ 7:0] ro,go,bo;
+wire [15:0] rg,gg,bg;
+wire [ 3:0] red,green,blue;
 
-assign red = ri[7:4];
-assign blue = bi[7:4];
-assign green = gi[7:4];
+always @(posedge clk_48) begin : colorPalette
+	ri = r*intensity;
+	gi = g*intensity;
+	bi = b*intensity;
+	rg = 'hFFFF;
+	gg = 'hFFFF;
+	bg = 'hFFFF;
+	ro = 'h00;
+	go = 'h00;
+	bo = 'h00;
+	if (ri > 'h50)
+		ro = ri - 'h50;
+	if (gi > 'h00)
+		go = gi - 'h00;
+	if (bi > 'h30)
+		bo = bi - 'h30;
+	if (ro*'h7D < 'hFFFF)
+		rg = ro*'h7D;
+	if (go*'h72 < 'hFFFF)
+		gg = go*'h72;
+	if (bo*'h7F < 'hFFFF)
+		bg = bo*'h7F;
+end
+
+assign red   = rg[14:11];
+assign green = gg[14:11];
+assign blue  = bg[14:11];
 
 reg ce_pix;
 always @(posedge clk_48) begin
@@ -343,9 +368,9 @@ williams2 williams2
 	.video_r(r),           // [3:0]
 	.video_g(g),           // [3:0]
 	.video_b(b),           // [3:0]
-	.video_i(intensity),           // [3:0] Color Intensity multiplier
-	.video_hblank(hblank), // 48 <-> 1
-	.video_vblank(vblank), // 504 <-> 262
+	.video_i(intensity),   // [3:0] Color Intensity
+	.video_hblank(hblank), // 48 <-> 1?
+	.video_vblank(vblank), // 504 <-> 262?
 	.video_hs(hs),
 	.video_vs(vs),
 
