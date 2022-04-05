@@ -45,15 +45,16 @@ One of the coolest features of the Williams service menu was you could customize
 
 ## Status
 
-* Mystic Marathon seems to run and play fine, with somewhat incorrect colors (ocean should be blue, not purple --> [video showing normal colors](https://www.youtube.com/watch?v=R5OeC6Wc_yI))
+* The game seems to play fine, colors are closer to what the original board would have output most likely, maybe a little muted, LUT needs some slight adjustments later.
 * Video has this occasional blip where you see a line scrolling, it's possible that sync is not properly aligned internally.
+* Video blanks are slightly off, you can see the last line at the top of the screen and then a black line.
 
 ## To-Do
 
-* Pause not implemented.
-* HiScore saving not implemented yet.
+* Pause.
+* HiScore.
 * MiSTer DIP system not implemented yet (DIPS are defined away as CPU behavior currently in the PIA due to them not being a standard DIP system)
-* Adjust video output for HDMI, it is up a few too many lines.
+* Analog video is untested as my scaler doesn't sync to the image, may need to clean that up somewhat.
 
 ## ROM Files Instructions
 
