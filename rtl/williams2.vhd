@@ -1242,8 +1242,8 @@ if rising_edge(clock_12) then
   elsif hcnt =  1 and pixel_cnt = 3 then hblank <= '0';
   end if;
 
-  if    vcnt = 504 then vblank <= '1';
-  elsif vcnt = 262 then vblank <= '0'; 
+  if    vcnt = 502 then vblank <= '1';
+  elsif vcnt = 260 then vblank <= '0'; 
   end if;
 
   -- external sync and blank outputs
