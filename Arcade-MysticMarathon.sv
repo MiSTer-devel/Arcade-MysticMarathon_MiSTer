@@ -212,7 +212,7 @@ localparam CONF_STR = {
 	"OC,High Score Reset,Off,On;",
 	"-;",
 	"R0,Reset;",
-	"J1,Fire,Start 1P,Start 2P,Coin,Pause;",
+	"J1,Fire,Start 1P,Start 2P,Coin;",
 	"jn,A,B,X,Start,Select,R,L;",
 	"V,v",`BUILD_DATE 
 };
@@ -263,7 +263,6 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 wire   clk_sys;
 wire   pll_locked;
 wire   clk_48,clk_12;
-wire   clk_mem = clk_48;
 assign clk_sys = clk_12;
 
 pll pll
@@ -288,13 +287,11 @@ wire m_trigger = joy[4];
 wire m_start1  = joy[5];
 wire m_start2  = joy[6];
 wire m_coin    = joy[7];
-wire m_pause   = joy[8];
 
 // DISPLAY
 
 wire hblank, vblank;
 wire hs, vs;
-
 wire [ 3:0] r,g,b,intensity;
 wire [ 7:0] ri,gi,bi;
 
@@ -321,11 +318,10 @@ wire [7:0] color_lut[256] = '{
     8'd91, 8'd97, 8'd105, 8'd114, 8'd123, 8'd133, 8'd147, 8'd161, 8'd176, 8'd196, 8'd223, 8'd249, 8'd252, 8'd254, 8'd254, 8'd255
 };
 
-always @(posedge clk_48) begin : colorPalette
-    ri = ~| intensity ? 8'd0 : color_lut[{r_swap, intensity}];
-    gi = ~| intensity ? 8'd0 : color_lut[{g, intensity}];
-    bi = ~| intensity ? 8'd0 : color_lut[{b_swap, intensity}];
-
+always_ff @( clk_48 ) begin : rgbOutput
+	ri = ~| intensity ? 8'd0 : color_lut[{r_swap, intensity}];
+	gi = ~| intensity ? 8'd0 : color_lut[{g, intensity}];
+	bi = ~| intensity ? 8'd0 : color_lut[{b_swap, intensity}];
 end
 
 reg ce_pix;
@@ -335,7 +331,7 @@ always @(posedge clk_48) begin
     ce_pix <= !div;
 end
 
-arcade_video #(256,24) arcade_video
+arcade_video #(256,24,1) arcade_video
 (
         .*,
 
@@ -370,6 +366,7 @@ williams2 williams2
 	.video_i(intensity),   // [3:0] Color Intensity
 	.video_hblank(hblank), // 48 <-> 1?
 	.video_vblank(vblank), // 504 <-> 262?
+	.video_blankn(!hblank | !vblank),
 	.video_hs(hs),
 	.video_vs(vs),
 

@@ -70,6 +70,7 @@ port(
  video_csync    : out std_logic;
  video_hblank   : out std_logic;
  video_vblank   : out std_logic;
+ video_blankn   : out std_logic;
  video_hs       : out std_logic;
  video_vs       : out std_logic;
  
@@ -1187,7 +1188,7 @@ port map
 );
 
 -- video syncs and blanks
---video_csync <= csync;
+video_csync <= csync;
 
 video_hblank <= hblank;
 video_vblank <= vblank;
@@ -1246,7 +1247,7 @@ if rising_edge(clock_12) then
   end if;
 
   -- external sync and blank outputs
-  --video_blankn <= not (hblank or vblank);
+  video_blankn <= not (hblank or vblank);
 
   video_hs <= hsync0;
   
