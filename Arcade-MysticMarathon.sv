@@ -197,8 +197,8 @@ assign LED_USER = 0;
 
 wire [1:0] ar = status[9:8];
 
-assign VIDEO_ARX = (!ar) ? 12'd4 : (ar - 1'd1);
-assign VIDEO_ARY = (!ar) ? 12'd3 : 12'd0;
+assign VIDEO_ARX = (!ar) ? 12'd909 : (ar - 1'd1);
+assign VIDEO_ARY = (!ar) ? 12'd763 : 12'd0;
 
 `include "build_id.v" 
 localparam CONF_STR = {
@@ -318,7 +318,7 @@ wire [7:0] color_lut[256] = '{
     8'd91, 8'd97, 8'd105, 8'd114, 8'd123, 8'd133, 8'd147, 8'd161, 8'd176, 8'd196, 8'd223, 8'd249, 8'd252, 8'd254, 8'd254, 8'd255
 };
 
-always_ff @( clk_48 ) begin : rgbOutput
+always @(posedge clk_48) begin : rgbOutput
 	ri = ~| intensity ? 8'd0 : color_lut[{r_swap, intensity}];
 	gi = ~| intensity ? 8'd0 : color_lut[{g, intensity}];
 	bi = ~| intensity ? 8'd0 : color_lut[{b_swap, intensity}];
