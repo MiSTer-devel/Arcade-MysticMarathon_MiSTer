@@ -297,52 +297,51 @@ wire hs, vs;
 
 wire [ 3:0] r,g,b,intensity;
 wire [ 7:0] ri,gi,bi;
-wire [ 7:0] ro,go,bo;
-wire [15:0] rg,gg,bg;
-wire [ 3:0] red,green,blue;
+
+// 2 bits are swapped in these chips, necessary to fix color
+wire [3:0] r_swap ={r[1], r[2], r[3], r[0]};
+wire [3:0] b_swap ={b[1], b[2], b[3], b[0]};
+
+wire [7:0] color_lut[256] = '{
+    8'd19, 8'd21, 8'd23,  8'd25,  8'd26,  8'd29,  8'd32,  8'd35,  8'd38,  8'd43,  8'd49,  8'd56,  8'd65,  8'd76,  8'd96,  8'd108,
+    8'd21, 8'd22, 8'd24,  8'd26,  8'd28,  8'd30,  8'd34,  8'd37,  8'd40,  8'd45,  8'd52,  8'd59,  8'd68,  8'd80,  8'd101, 8'd114,
+    8'd22, 8'd24, 8'd26,  8'd28,  8'd30,  8'd33,  8'd36,  8'd39,  8'd43,  8'd48,  8'd55,  8'd63,  8'd73,  8'd86,  8'd107, 8'd121,
+    8'd24, 8'd25, 8'd27,  8'd29,  8'd32,  8'd35,  8'd38,  8'd42,  8'd46,  8'd52,  8'd59,  8'd67,  8'd77,  8'd91,  8'd114, 8'd129,
+    8'd25, 8'd27, 8'd29,  8'd31,  8'd34,  8'd37,  8'd40,  8'd45,  8'd48,  8'd54,  8'd62,  8'd71,  8'd81,  8'd96,  8'd121, 8'd137,
+    8'd27, 8'd28, 8'd31,  8'd34,  8'd36,  8'd39,  8'd44,  8'd48,  8'd52,  8'd58,  8'd66,  8'd76,  8'd87,  8'd103, 8'd129, 8'd146,
+    8'd29, 8'd31, 8'd34,  8'd36,  8'd39,  8'd43,  8'd47,  8'd52,  8'd56,  8'd63,  8'd72,  8'd82,  8'd94,  8'd111, 8'd140, 8'd158,
+    8'd32, 8'd34, 8'd37,  8'd39,  8'd43,  8'd46,  8'd51,  8'd56,  8'd61,  8'd68,  8'd78,  8'd89,  8'd102, 8'd120, 8'd151, 8'd171,
+    8'd32, 8'd35, 8'd38,  8'd41,  8'd44,  8'd48,  8'd53,  8'd59,  8'd64,  8'd72,  8'd83,  8'd94,  8'd109, 8'd129, 8'd161, 8'd182,
+    8'd36, 8'd38, 8'd42,  8'd45,  8'd48,  8'd53,  8'd59,  8'd65,  8'd70,  8'd79,  8'd90,  8'd104, 8'd119, 8'd141, 8'd177, 8'd201,
+    8'd40, 8'd43, 8'd46,  8'd50,  8'd54,  8'd59,  8'd65,  8'd72,  8'd79,  8'd88,  8'd101, 8'd115, 8'd133, 8'd157, 8'd198, 8'd224,
+    8'd45, 8'd48, 8'd52,  8'd57,  8'd61,  8'd66,  8'd74,  8'd81,  8'd88,  8'd98,  8'd113, 8'd129, 8'd149, 8'd176, 8'd221, 8'd249,
+    8'd50, 8'd54, 8'd58,  8'd64,  8'd68,  8'd75,  8'd83,  8'd91,  8'd99,  8'd111, 8'd128, 8'd146, 8'd169, 8'd200, 8'd249, 8'd253,
+    8'd58, 8'd63, 8'd68,  8'd74,  8'd79,  8'd87,  8'd96,  8'd106, 8'd116, 8'd129, 8'd148, 8'd169, 8'd195, 8'd231, 8'd253, 8'd254,
+    8'd71, 8'd76, 8'd83,  8'd89,  8'd96,  8'd105, 8'd116, 8'd128, 8'd139, 8'd156, 8'd179, 8'd205, 8'd236, 8'd252, 8'd254, 8'd254,
+    8'd91, 8'd97, 8'd105, 8'd114, 8'd123, 8'd133, 8'd147, 8'd161, 8'd176, 8'd196, 8'd223, 8'd249, 8'd252, 8'd254, 8'd254, 8'd255
+};
 
 always @(posedge clk_48) begin : colorPalette
-	ri = r*intensity;
-	gi = g*intensity;
-	bi = b*intensity;
-	rg = 'hFFFF;
-	gg = 'hFFFF;
-	bg = 'hFFFF;
-	ro = 'h00;
-	go = 'h00;
-	bo = 'h00;
-	if (ri > 'h50)
-		ro = ri - 'h50;
-	if (gi > 'h00)
-		go = gi - 'h00;
-	if (bi > 'h30)
-		bo = bi - 'h30;
-	if (ro*'h7D < 'hFFFF)
-		rg = ro*'h7D;
-	if (go*'h72 < 'hFFFF)
-		gg = go*'h72;
-	if (bo*'h7F < 'hFFFF)
-		bg = bo*'h7F;
-end
+    ri = ~| intensity ? 8'd0 : color_lut[{r_swap, intensity}];
+    gi = ~| intensity ? 8'd0 : color_lut[{g, intensity}];
+    bi = ~| intensity ? 8'd0 : color_lut[{b_swap, intensity}];
 
-assign red   = rg[14:11];
-assign green = gg[14:11];
-assign blue  = bg[14:11];
+end
 
 reg ce_pix;
 always @(posedge clk_48) begin
-	reg [2:0] div;
-	div <= div + 1'd1;
-	ce_pix <= !div;
+    reg [2:0] div;
+    div <= div + 1'd1;
+    ce_pix <= !div;
 end
 
-arcade_video #(256,12) arcade_video
+arcade_video #(256,24) arcade_video
 (
         .*,
 
         .clk_video(clk_48),
 
-        .RGB_in({red,green,blue}),
+        .RGB_in({ri[7:0],gi[7:0],bi[7:0]}),
         .HBlank(hblank),
         .VBlank(vblank),
         .HSync(~hs),
@@ -350,7 +349,7 @@ arcade_video #(256,12) arcade_video
 
         .fx(status[5:3])
 );
-
+	
 wire [7:0] audio;
 assign AUDIO_L = {audio, 6'd0};
 assign AUDIO_R = AUDIO_L;
