@@ -212,7 +212,7 @@ localparam CONF_STR = {
 	"OC,High Score Reset,Off,On;",
 	"-;",
 	"R0,Reset;",
-	"J1,Fire,Start 1P,Start 2P,Coin;",
+	"J1,Jump,Start 1P,Start 2P,Coin;",
 	"jn,A,B,X,Start,Select,R,L;",
 	"V,v",`BUILD_DATE 
 };
@@ -331,7 +331,7 @@ always @(posedge clk_48) begin
     ce_pix <= !div;
 end
 
-arcade_video #(256,24,1) arcade_video
+	arcade_video #(313,24,1) arcade_video
 (
         .*,
 
