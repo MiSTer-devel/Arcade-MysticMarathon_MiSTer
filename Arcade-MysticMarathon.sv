@@ -204,14 +204,14 @@ assign VIDEO_ARY = (!ar) ? 12'd763 : 12'd0;
 localparam CONF_STR = {
 	"A.MYSTICMARATHON;;",
 	"-;",
-	"O89,Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
-	"O35,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
+	"O[9:8],Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
+	"O[5:3],Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
 	"-;",
-	"OA,Advance,Off,On;",
-	"OB,Auto Up,Off,On;",
-	"OC,High Score Reset,Off,On;",
+	"O[10],Advance,Off,On;",
+	"O[11],Auto Up,Off,On;",
+	"O[12],High Score Reset,Off,On;",
 	"-;",
-	"R0,Reset;",
+	"R[0],Reset;",
 	"J1,Jump,Start 1P,Start 2P,Coin;",
 	"jn,A,B,X,Start,Select,R,L;",
 	"V,v",`BUILD_DATE 
@@ -226,9 +226,9 @@ wire [24:0] ioctl_addr;
 wire [ 7:0] ioctl_dout;
 wire [15:0] ioctl_index;
 
-wire [ 1:0] buttons;
-wire [31:0] status;
-wire [10:0] ps2_key;
+wire [  1:0] buttons;
+wire [127:0] status;
+wire [ 10:0] ps2_key;
 
 wire [15:0] joystick_0;
 wire [15:0] joy = joystick_0;
