@@ -326,7 +326,7 @@ end
 
 reg ce_pix;
 always @(posedge clk_48) begin
-    reg [1:0] div;
+    reg [2:0] div;
     div <= div + 1'd1;
     ce_pix <= !div;
 end
