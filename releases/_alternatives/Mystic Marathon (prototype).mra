@@ -11,7 +11,7 @@
   <manufacturer>Williams</manufacturer>
   <category>Sports</category>
 
-  <setname>mysticm</setname>
+  <setname>mysticmp</setname>
   <parent>mysticm</parent>
   <mameversion>0222</mameversion>
   <rbf>MysticMarathon</rbf>
